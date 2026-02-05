@@ -63,7 +63,7 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -75,18 +75,61 @@ export default function ChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const userInput = input;
     setInput('');
 
-    // Simuler une réponse de l'assistant
-    setTimeout(() => {
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: 'Je traite votre demande... (fonctionnalité IA à venir)',
-        sender: 'assistant',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-    }, 1000);
+    // Ajouter un message de chargement
+    const loadingId = Date.now().toString() + '_loading';
+    const loadingMessage: Message = {
+      id: loadingId,
+      text: '💭 En train de réfléchir...',
+      sender: 'assistant',
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, loadingMessage]);
+
+    try {
+      // Appel à l'API
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userInput }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+
+      // Remplacer le message de chargement par la vraie réponse
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === loadingId
+            ? {
+                ...msg,
+                text: data.message,
+                timestamp: new Date(),
+              }
+            : msg
+        )
+      );
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === loadingId
+            ? {
+                ...msg,
+                text: '❌ Désolé, une erreur est survenue. Vérifiez que la clé API OpenAI est configurée.',
+                timestamp: new Date(),
+              }
+            : msg
+        )
+      );
+    }
   };
 
   const toggleListening = () => {

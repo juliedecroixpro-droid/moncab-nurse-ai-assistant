@@ -18,6 +18,20 @@ bun install
 npm install
 ```
 
+## Configuration
+
+### Clé API OpenAI
+
+1. Créer un compte sur [OpenAI Platform](https://platform.openai.com/)
+2. Générer une clé API sur [API Keys](https://platform.openai.com/api-keys)
+3. Créer un fichier `.env.local` à la racine du projet:
+
+```bash
+OPENAI_API_KEY=sk-proj-votre-cle-ici
+```
+
+Sur Vercel, ajouter la variable d'environnement dans les Settings du projet.
+
 ## Développement
 
 ```bash
@@ -42,10 +56,18 @@ Le projet est automatiquement déployé sur Vercel via GitHub.
 
 ## Fonctionnalités
 
-- 🔐 Page de connexion sécurisée
-- 📱 Design responsive
-- 🎨 Interface moderne avec Tailwind CSS
-- ⚡ Performance optimisée avec Next.js 15
+- 🔐 **Authentification** - Compte test (test/test123)
+- 💬 **Chat IA** - Powered by OpenAI GPT-4o-mini
+- 🎤 **Speech-to-Text** - Reconnaissance vocale en français
+- 📱 **Design responsive** - Fonctionne sur mobile et desktop
+- 🎨 **Interface moderne** - Tailwind CSS
+- ⚡ **Performance optimisée** - Next.js 15 + Vercel
+
+### Chat Features
+- Reconnaissance vocale (Web Speech API)
+- Réponses IA contextuelles pour IDEL
+- Interface de chat en temps réel
+- Historique des conversations
 
 ## License
 
