@@ -1,15 +1,28 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', { username, password });
-    // TODO: Implement authentication
+    setError('');
+
+    // Compte test
+    if (username === 'test' && password === 'test123') {
+      localStorage.setItem('moncab_auth', 'true');
+      localStorage.setItem('moncab_user', username);
+      router.push('/chat');
+      return;
+    }
+
+    // Autres comptes (à implémenter)
+    setError('Identifiants incorrects. Utilisez test/test123 pour accéder à la démo.');
   };
 
   return (
@@ -43,6 +56,24 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Demo Badge */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800 font-medium">
+            🎯 Compte démo
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            Username: <span className="font-mono font-semibold">test</span> / 
+            Password: <span className="font-mono font-semibold">test123</span>
+          </p>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-800">{error}</p>
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -72,6 +103,7 @@ export default function Home() {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Entrez votre nom d'utilisateur"
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             </div>
           </div>
@@ -103,6 +135,7 @@ export default function Home() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Entrez votre mot de passe"
                 className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
               />
             </div>
           </div>
@@ -114,6 +147,13 @@ export default function Home() {
             Se connecter
           </button>
         </form>
+
+        {/* Footer */}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-gray-500">
+            💡 Fonctionnalités: Chat avec reconnaissance vocale (Speech-to-Text)
+          </p>
+        </div>
       </div>
     </div>
   );
